@@ -40,10 +40,10 @@ INSTALLED_APPS = [
 
     'shop',
 
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',   
+    # 'allauth',
+    # 'allauth.account',
+    # 'allauth.socialaccount',
+    # 'allauth.socialaccount.providers.google',   
 ]
 
 MIDDLEWARE = [
@@ -55,7 +55,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-     "allauth.account.middleware.AccountMiddleware",
+    #  "allauth.account.middleware.AccountMiddleware",
 
 ]
 
@@ -145,6 +145,6 @@ LOGOUT_REDIRECT_URL = '/'
 
 
 # Social Media
-SOCIALACCOUNT_LOGIN_ON_GET = True
-ACCOUNT_SESSION_REMEMBER = True 
-ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
+# SOCIALACCOUNT_LOGIN_ON_GET = True
+# ACCOUNT_SESSION_REMEMBER = True 
+# ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
