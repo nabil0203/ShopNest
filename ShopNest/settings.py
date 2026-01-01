@@ -40,10 +40,10 @@ INSTALLED_APPS = [
 
     'shop',
 
-    # 'allauth',
-    # 'allauth.account',
-    # 'allauth.socialaccount',
-    # 'allauth.socialaccount.providers.google',   
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',   
 ]
 
 MIDDLEWARE = [
