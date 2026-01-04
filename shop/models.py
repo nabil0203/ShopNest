@@ -14,7 +14,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator         
 # Category Model
 class Category(models.Model):
     name = models.CharField(max_length=100)
-    slug = models.SlugField(max_length=100, unique=True)                        # unique = true; 1 name for 1 product
+    slug = models.SlugField(max_length=100, unique=True)                        # slug used for URL; unique = true--> 1 name for 1 product
     description = models.TextField()
 
 
