@@ -4,9 +4,11 @@ from django.contrib import messages
 
 from .forms import RatingForm, RegistrationForm, CheckoutForm
 
-from .import models 
+from . import models 
 
 from django.db.models import Q, Min, Max, Avg
+
+from . import forms
 
 
 
@@ -205,7 +207,7 @@ def product_detail(request, slug):
     #         pass
 
 
-    rating_form = RatingFrom(isinstance= user_rating)
+    rating_form = RatingForm(isinstance= user_rating)
 
 
 
@@ -227,11 +229,8 @@ def product_detail(request, slug):
 
 
 
-
-
-
 # Rate a Product 
-# Can rate when--> i)logged in user, ii) Purchased the product
+# user can rate when--> i)logged in user, ii) Purchased the product
 
 def rate_product(request, product_id):
     product = get_object_or_404(models.Product, id = product_id)                                        # get the specific product
@@ -293,6 +292,283 @@ def rate_product(request, product_id):
 
 
     return render(request, '', context)
+
+
+
+
+
+
+
+
+
+# Everything about cart - feature
+
+
+# cart add
+# 1 user -> 1 cart
+def cart_add(request,product_id):
+    product = get_object_or_404(models.Product, id = product_id)
+
+
+    # Check cart exists or not (exception handling)
+    try:
+        cart = models.Cart.objects.get(get_object_or_404.user)                                    # if the user already have a cart, then put that in the "cart" variable
+
+    except models.Cart.DoesNotExist:                                                              # if the user do not have a cart,
+        cart = models.Cart.objects.create(user = request.user)                                    # then create one
+
+
+    
+    # add items into cart
+    try:
+        cart_item = models.CartItem.objects.get(cart=cart, product=product)                                   # if the item is already in the cart
+        cart_item.quantity += 1                                                                               # then just increase the quantity
+        cart_item.save()
+
+
+    except models.CartItem.DoesNotExist:                                                                   # if the item is not in the cart(empty cart)
+        models.CartItem.objects.create(cart=cart, product = product, quantity = 1)                         # then add the item in the cart; initial item quantity = 1
+
+
+
+    messages.success(request, f"{product.name} has been added to your cart!")
+
+    return redirect('product_detail', slug=product.slug)
+
+
+
+
+
+    
+
+
+# cart update
+# cart item increase/decrease
+def cart_add(request,product_id):
+    
+    cart = get_object_or_404(models.Cart, user=request.user)                                                    # which cart [user's cart exists or not]
+
+    product = get_object_or_404(models.Product, product_id)                                                     # main product which is in the cart as cart item
+
+    cart_item = get_object_or_404(models.CartItem, cart=cart, product=product)                                  # cart item[the item we are working with]
+
+    quantity = int(request.POST.get('quantity', 1))                                                               # initial quantity = 1                       
+
+
+   
+    # soap -> in stock 20 products
+    # user, soap -> 40 pieces added to the cart❌❌
+
+
+    # user, soap -> 5, 4, 3, 2, 1, 0
+    # when '0' piece it means we need to delete the cartitem
+    if quantity <= 0:
+        cart_item.delete()
+        messages.success(request, f"{product.name} has been removed from your cart!")
+    
+    else:
+        cart_item.quantity = quantity
+        cart_item.save()
+        messages.success(request, f"Cart updated successfully!!")
+
+
+
+
+    return redirect('')
+
+
+
+
+
+
+
+
+# full cart delete
+def cart_remove(request,product_id):
+
+    # to delete, at first we need to get the following things
+    cart = get_object_or_404(models.Cart, user=request.user)
+    product = get_object_or_404(models.Product, id=product_id)
+    cart_item = get_object_or_404(models.CartItem, cart=cart, product=product)
+
+
+    # delete
+    cart_item.delete()
+    messages.success(request, f"{product.name} has been Deleted from your cart!")
+
+
+
+    return redirect('')
+
+
+
+
+
+
+
+# cart details
+def cart_detail(request):
+
+    # user don't have any cart
+    try:
+        cart = models.Cart.objects.get(user=request.user)
+
+    # user have any cart
+    except models.Cart.DoesNotExist:
+        cart = models.Cart.objects.create(user=request.user)
+    
+
+
+
+    return render(request, '', {'cart' : cart})
+
+
+
+
+
+
+
+
+
+# Checkout
+# 1. take data from the cart
+# 2. Input all the data of CheckoutForm: ['first_name', 'last_name', 'email', 'address', 'postal_code', 'city','note']
+# 3. show full amount
+# 4. Payment gateway
+# full transition:- Product --> Cart Item --> Order Item
+
+def checkout(request):
+
+    try:
+        cart = models.Cart.objects.get(user=request.user)                                # user have a cart(cart has items)
+        if not cart.items.exists():                                                      # suppose deleted the items until the cart is 'empty'
+            messages.warning(request, 'Your cart is empty')                              # as the cart is empty, so it will not go to checkout page----> it will show a warning message
+            return redirect('')
+
+    
+    except models.Cart.DoesNotExist:                                                 # user have no cart
+        messages.warning(request, 'Your cart is empty!')                             # as there is no cart, so it will never go to checkout page----> it will show a warning message
+        return redirect('')
+    
+
+
+    # user have a cart (cart has items)
+    # CheckoutForm fill-up (means inserting data into the form)
+    if request.method == 'POST':
+        form = CheckoutForm(request.POST)
+
+        if form.is_valid():
+            order = form.save(commit=False)                                         # "commit=False"--> form object created but not pushed in the DB
+            order.user = request.user
+            order.save()                                        # save means -> order done
+
+
+            for item in cart.items.all():
+                models.OrderItem.objects.create(                                # creating OrderItem for all objects
+                    order = order,
+                    product = item.product,                                     # here, cart item = order item
+                    price = item.product.price,                                 # product's main price = order item's main price
+                    quantity = item.quantity                                    # cart item's quantity = order item's quantity
+                )
+
+            
+            # order done finally
+            # As the order is completed, the cart will not has any value
+            cart.items.all().delete() 
+            request.session['order_id'] = order.id                                          # session delete
+            return redirect(request, '')
+
+    else:
+        form = forms.CheckoutForm()
+
+
+    
+    context = {
+        'cart' : cart,
+        'form' : form
+    }
+
+
+    return render(request, context)
+
+
+
+        
+
+
+
+
+
+# Payment
+# 4 Steps
+
+# 1. Payment Success
+def payment_success(request, order_id):
+    order = get_object_or_404(models.Order, id = order_id, user=request.user)
+
+
+    order.paid = True                                           # order --> paid
+    order.status = 'processing'                                 # order status --> processing
+    order.transaction_id = order.id                             # take transaction id
+    order.save()
+
+
+    # get all the order items
+    order_items = order.order_items.all()
+
+
+    # for each item:
+    for item in order_items:
+        product = item.product                                  # get the exact one product each time
+        product.stock -= item.quantity                          # product stock --> decrease
+
+
+
+        if product.stock < 0:
+            product.stock = 0                                    # if negative value comes by  any issue, make stock 0
+    
+        product.save()
+
+
+
+    # Send Confirmation email
+
+    messages.success(request, 'Payment Successful')
+
+    return render(request, '', {'order': order})
+
+
+
+
+
+
+
+# 2. Payment Failed
+def payment_fail(request, order_id):
+    order = get_object_or_404(models.Order, id = order_id, user=request.user)
+
+    order.status = 'canceled'
+
+
+    order.save()
+    return redirect('')
+
+
+
+
+
+# 3. Payment Cancel
+def payment_cancel(request, order_id):
+    order = get_object_or_404(models.Order, id = order_id, user=request.user)
+
+    order.status = 'canceled'
+
+
+    order.save()
+    return redirect('')
+
+
+
 
 
 
