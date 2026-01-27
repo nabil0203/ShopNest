@@ -105,6 +105,10 @@ class Cart(models.Model):
                                                                                             # get_cost() ---> full price of each product
                                                                                             # items ---> how many items are there
 
+     # total number of items
+    def get_total_items(self):
+        return sum(item.quantity for item in self.items.all()) 
+
 
 
 

@@ -10,6 +10,8 @@ from django.db.models import Q, Min, Max, Avg
 
 from . import forms
 
+from . import sslcommerz
+
 
 
 # manual Authentication
@@ -525,7 +527,7 @@ def payment_success(request, order_id):
 
 
         if product.stock < 0:
-            product.stock = 0                                    # if negative value comes by  any issue, make stock 0
+            product.stock = 0                                    # if negative value comes by any issue, make stock 0
     
         product.save()
 
@@ -566,6 +568,31 @@ def payment_cancel(request, order_id):
 
     order.save()
     return redirect('')
+
+
+
+
+# 4. Payment Process
+# We Need SSL Commerz
+
+def payment_process(request):
+
+    # session id used to get the information of the order
+
+    order_id = request.session.get('order_id')
+
+    if not order_id:
+        return redirect('')
+    
+    order = get_object_or_404(models.Order, id=order_id)
+    payment_data = sslcommerz.generate_sslcommerz_payment(request, order)
+    
+
+    if payment_data['status'] == 'SUCCESS':
+        return redirect('')
+    else:
+        messages.error(request, 'Payment gateway error. Please Try again.')
+        return redirect('')
 
 
 

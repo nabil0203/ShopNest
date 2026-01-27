@@ -74,6 +74,8 @@ TEMPLATES = [
                 
                  # `allauth` needs this from django
                 'django.template.context_processors.request',
+                # context processors
+                'shop.context_processor.cart_items_count'
             ],
         },
     },
@@ -137,7 +139,7 @@ MEDIA_ROOT = 'media'
 
 
 # Login URL
-# Autheticated user     
+# Authenticated user     
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
@@ -148,3 +150,26 @@ LOGOUT_REDIRECT_URL = '/'
 # SOCIALACCOUNT_LOGIN_ON_GET = True
 # ACCOUNT_SESSION_REMEMBER = True 
 # ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
+
+
+
+
+
+
+# SSL Commerz setup
+SSLCOMMERZ_STORE_ID = 'shopn69785c87a4d20'
+SSLCOMMERZ_STORE_PASSWORD = 'shopn69785c87a4d20@ssl'
+SSLCOMMERZ_PAYMENT_URL = 'https://sandbox.sslcommerz.com/gwprocess/v4/api.php'
+SSLCOMMERZ_VALIDATION_URL = 'https://sandbox.sslcommerz.com/validator/api/validationserverAPI.php'
+
+
+
+
+
+# Email Setup
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'nabilchowdhury0203@gmail.com'
+EMAIL_HOST_PASSWORD = 'hajocskvlpwjqrdi'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
