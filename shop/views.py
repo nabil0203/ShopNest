@@ -12,6 +12,8 @@ from . import forms
 
 from . import sslcommerz
 
+from django.contrib.auth.decorators import login_required
+
 
 
 # manual Authentication
@@ -25,7 +27,7 @@ def login_view(request):
 
         if user is not None:
             login(request, user)
-            redirect('home')
+            return redirect('home')
         else:
             messages.error(request,"Invalid Credentials")
 
@@ -60,7 +62,7 @@ def register_view(request):
 # user logout
 def logout_view(request):
     logout(request)
-    return render ('login')
+    return redirect('login')
 
 
 
@@ -103,8 +105,8 @@ def product_list(request, category_slug = None):
 
     # filtering based on the 'category'
     if category_slug:
-        category = get_object_or_404(models.Category, category_slug)                                 # check whether the category_slug provided by the user, exists in the Category model
-        product = products.filter(category = category)                                               # if it exists, then apply the filter; if not exists, give an error
+        category = get_object_or_404(models.Category, slug = category_slug)                                 # check whether the category_slug provided by the user, exists in the Category model
+        products = products.filter(category = category)                                               # if it exists, then apply the filter; if not exists, give an error
 
 
 
@@ -208,7 +210,7 @@ def product_detail(request, slug):
     #         pass
 
 
-    rating_form = RatingForm(isinstance= user_rating)
+    rating_form = RatingForm(instance= user_rating)
 
 
 
@@ -233,6 +235,7 @@ def product_detail(request, slug):
 # Rate a Product 
 # user can rate when--> i)logged in user, ii) Purchased the product
 
+@login_required
 def rate_product(request, product_id):
     product = get_object_or_404(models.Product, id = product_id)                                        # get the specific product
 
@@ -306,6 +309,7 @@ def rate_product(request, product_id):
 
 
 # cart details
+@login_required
 def cart_detail(request):
 
     # user don't have any cart
@@ -329,13 +333,14 @@ def cart_detail(request):
 
 # cart add
 # 1 user -> 1 cart
+@login_required
 def cart_add(request,product_id):
     product = get_object_or_404(models.Product, id = product_id)
 
 
     # Check cart exists or not (exception handling)
     try:
-        cart = models.Cart.objects.get(get_object_or_404.user)                                    # if the user already have a cart, then put that in the "cart" variable
+        cart = models.Cart.objects.get(user = request.user)                                    # if the user already have a cart, then put that in the "cart" variable
 
     except models.Cart.DoesNotExist:                                                              # if the user do not have a cart,
         cart = models.Cart.objects.create(user = request.user)                                    # then create one
@@ -356,7 +361,7 @@ def cart_add(request,product_id):
 
     messages.success(request, f"{product.name} has been added to your cart!")
 
-    return redirect(request, 'product_detail', slug=product.slug)
+    return redirect('product_detail', slug=product.slug)
 
 
 
@@ -367,11 +372,12 @@ def cart_add(request,product_id):
 
 # cart update
 # cart item increase/decrease
+@login_required
 def cart_update(request,product_id):
     
     cart = get_object_or_404(models.Cart, user=request.user)                                                    # which cart [user's cart exists or not]
 
-    product = get_object_or_404(models.Product, product_id)                                                     # main product which is in the cart as cart item
+    product = get_object_or_404(models.Product, id=product_id)                                                     # main product which is in the cart as cart item
 
     cart_item = get_object_or_404(models.CartItem, cart=cart, product=product)                                  # cart item[the item we are working with]
 
@@ -406,6 +412,7 @@ def cart_update(request,product_id):
 
 
 # full cart delete
+@login_required
 def cart_remove(request,product_id):
 
     # to delete, at first we need to get the following things
@@ -439,13 +446,14 @@ def cart_remove(request,product_id):
 # 4. Payment gateway
 # full transition:- Product --> Cart Item --> Order Item
 
+@login_required
 def checkout(request):
 
     try:
         cart = models.Cart.objects.get(user=request.user)                                # user have a cart(cart has items)
         if not cart.items.exists():                                                      # suppose deleted the items until the cart is 'empty'
             messages.warning(request, 'Your cart is empty')                              # as the cart is empty, so it will not go to checkout page----> it will show a warning message
-            return redirect('')
+            return redirect('cart_detail')
 
     
     except models.Cart.DoesNotExist:                                                 # user have no cart
@@ -478,7 +486,7 @@ def checkout(request):
             # As the order is completed, the cart will not has any value
             cart.items.all().delete() 
             request.session['order_id'] = order.id                                          # session delete
-            return redirect(request, 'payment_process')
+            return redirect('payment_process')
 
     else:
         form = forms.CheckoutForm()
@@ -508,6 +516,7 @@ def checkout(request):
 # 0. Payment Process
 # We Need SSL Commerz
 
+@login_required
 def payment_process(request):
 
     # session id used to get the information of the order
@@ -534,6 +543,7 @@ def payment_process(request):
 
 
 # 1. Payment Success
+@login_required
 def payment_success(request, order_id):
     order = get_object_or_404(models.Order, id = order_id, user=request.user)
 
@@ -575,6 +585,7 @@ def payment_success(request, order_id):
 
 
 # 2. Payment Failed
+@login_required
 def payment_fail(request, order_id):
     order = get_object_or_404(models.Order, id = order_id, user=request.user)
 
@@ -588,6 +599,7 @@ def payment_fail(request, order_id):
 
 
 # 3. Payment Cancel
+@login_required
 def payment_cancel(request, order_id):
     order = get_object_or_404(models.Order, id = order_id, user=request.user)
 

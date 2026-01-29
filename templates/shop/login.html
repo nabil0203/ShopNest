@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load socialaccount %}
-{% block title %}Login | Shop Nest{% endblock %}
+{% block title %}Login | ShopNest{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
@@ -32,9 +32,9 @@
                 
                 <div class="text-center">
                     <p>Or sign in with:</p>
-                    <a href="{% provider_login_url 'google' next=request.GET.next %}" class="btn btn-outline-danger">
+                    {% comment %} <a href="{% provider_login_url 'google' next=request.GET.next %}" class="btn btn-outline-danger">
                         <i class="fab fa-google me-2"></i> Google
-                    </a>
+                    </a> {% endcomment %}
                 </div>
                 
                 <div class="text-center mt-4">

@@ -74,6 +74,7 @@ TEMPLATES = [
                 
                  # `allauth` needs this from django
                 'django.template.context_processors.request',
+
                 # context processors
                 'shop.context_processor.cart_items_count'
             ],
@@ -147,9 +148,9 @@ LOGOUT_REDIRECT_URL = '/'
 
 
 # Social Media
-# SOCIALACCOUNT_LOGIN_ON_GET = True
-# ACCOUNT_SESSION_REMEMBER = True 
-# ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
+SOCIALACCOUNT_LOGIN_ON_GET = True
+ACCOUNT_SESSION_REMEMBER = True 
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 
 
 

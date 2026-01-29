@@ -41,7 +41,7 @@ def generate_sslcommerz_payment(request,order):
 
 # confirmation email
 def send_order_confirmation_email(order):
-    subject = f'Shop Nest Order Confirmation - Order #{order.id}'
+    subject = f'ShopNest Order Confirmation - Order #{order.id}'
     message = render_to_string('', {'order' : order})                                               # "render_to_string" used to convert HTML into string
                                                                                                     # the emails will be designed in HTML template
                                                                                                     # But email can't decode the HTML, that is why 'render_to_string' used to convert
