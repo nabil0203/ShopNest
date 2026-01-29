@@ -25,13 +25,12 @@ def login_view(request):
 
         if user is not None:
             login(request, user)
-            redirect('')
+            redirect('home')
         else:
             messages.error(request,"Invalid Credentials")
 
-
     else:
-        return render(request, '')        
+        return render(request, 'shop/login.html')        
 
 
 
@@ -48,11 +47,11 @@ def register_view(request):
             user = form.save()
             login(request, user)
             messages.success(request, "Registration Successful!")
-            return redirect('')
+            return redirect('home')
     else:
         form = RegistrationForm()
     
-    return render(request, '', {'form' : form})
+    return render(request, 'shop/register.html', {'form' : form})
 
 
 
@@ -61,7 +60,7 @@ def register_view(request):
 # user logout
 def logout_view(request):
     logout(request)
-    return render ('')
+    return render ('login')
 
 
 
@@ -82,7 +81,7 @@ def home(request):
         'categories' : categories
     }
 
-    return render(request, '', context)
+    return render(request, 'shop/home.html', context)
 
 
 
@@ -92,7 +91,7 @@ def home(request):
 
 # All Product List page
 
-# 2 types of URL -> Normal URL | Category-wise
+# 2 types of URL -> Normal URL | Category-wise URL
 # This page has filtering options
 # Filter based on 3 things -> Category || Price || Rating
 
@@ -169,7 +168,7 @@ def product_list(request, category_slug = None):
         'max_price' : max_price
     }
 
-    return render(request, '', context)
+    return render(request, 'shop/product_list.html', context)
     
 
 
@@ -221,7 +220,7 @@ def product_detail(request, slug):
     }
 
 
-    return render(request, '', context)
+    return render(request, 'shop/product_detail.html', context)
 
 
 
@@ -251,7 +250,7 @@ def rate_product(request, product_id):
     if not ordered_items.exists():
         messages.warning(request, 'You can only rate products you have purchased!')
 
-        return redirect('', slug=product.slug)
+        return redirect('product_detail', slug=product.slug)
     
 
 
@@ -293,7 +292,7 @@ def rate_product(request, product_id):
     }
 
 
-    return render(request, '', context)
+    return render(request, 'shop/rate_product.html', context)
 
 
 
@@ -303,7 +302,29 @@ def rate_product(request, product_id):
 
 
 
-# Everything about cart - feature
+# Everything about Cart - feature
+
+
+# cart details
+def cart_detail(request):
+
+    # user don't have any cart
+    try:
+        cart = models.Cart.objects.get(user=request.user)
+
+    # user have any cart
+    except models.Cart.DoesNotExist:
+        cart = models.Cart.objects.create(user=request.user)
+    
+
+
+
+    return render(request, 'shop/cart.html', {'cart' : cart})
+
+
+
+
+
 
 
 # cart add
@@ -335,7 +356,7 @@ def cart_add(request,product_id):
 
     messages.success(request, f"{product.name} has been added to your cart!")
 
-    return redirect('product_detail', slug=product.slug)
+    return redirect(request, 'product_detail', slug=product.slug)
 
 
 
@@ -346,7 +367,7 @@ def cart_add(request,product_id):
 
 # cart update
 # cart item increase/decrease
-def cart_add(request,product_id):
+def cart_update(request,product_id):
     
     cart = get_object_or_404(models.Cart, user=request.user)                                                    # which cart [user's cart exists or not]
 
@@ -375,8 +396,7 @@ def cart_add(request,product_id):
 
 
 
-
-    return redirect('')
+    return redirect('cart_detail')
 
 
 
@@ -400,29 +420,9 @@ def cart_remove(request,product_id):
 
 
 
-    return redirect('')
+    return redirect('cart_detail')
 
 
-
-
-
-
-
-# cart details
-def cart_detail(request):
-
-    # user don't have any cart
-    try:
-        cart = models.Cart.objects.get(user=request.user)
-
-    # user have any cart
-    except models.Cart.DoesNotExist:
-        cart = models.Cart.objects.create(user=request.user)
-    
-
-
-
-    return render(request, '', {'cart' : cart})
 
 
 
@@ -450,7 +450,7 @@ def checkout(request):
     
     except models.Cart.DoesNotExist:                                                 # user have no cart
         messages.warning(request, 'Your cart is empty!')                             # as there is no cart, so it will never go to checkout page----> it will show a warning message
-        return redirect('')
+        return redirect('cart_detail')
     
 
 
@@ -478,11 +478,10 @@ def checkout(request):
             # As the order is completed, the cart will not has any value
             cart.items.all().delete() 
             request.session['order_id'] = order.id                                          # session delete
-            return redirect(request, '')
+            return redirect(request, 'payment_process')
 
     else:
         form = forms.CheckoutForm()
-
 
     
     context = {
@@ -491,7 +490,7 @@ def checkout(request):
     }
 
 
-    return render(request, context)
+    return render(request,'shop/checkout.html', context)
 
 
 
@@ -503,6 +502,36 @@ def checkout(request):
 
 # Payment
 # 4 Steps
+
+
+
+# 0. Payment Process
+# We Need SSL Commerz
+
+def payment_process(request):
+
+    # session id used to get the information of the order
+
+    order_id = request.session.get('order_id')
+
+    if not order_id:
+        return redirect('home')
+    
+    order = get_object_or_404(models.Order, id=order_id)
+    payment_data = sslcommerz.generate_sslcommerz_payment(request, order)
+    
+
+    if payment_data['status'] == 'SUCCESS':
+        return redirect('payment_data[GatewayPageURL]')
+    else:
+        messages.error(request, 'Payment gateway error. Please Try again.')
+        return redirect('checkout')
+
+
+
+
+
+
 
 # 1. Payment Success
 def payment_success(request, order_id):
@@ -537,7 +566,7 @@ def payment_success(request, order_id):
 
     messages.success(request, 'Payment Successful')
 
-    return render(request, '', {'order': order})
+    return render(request, 'shop/payment_success.html', {'order': order})
 
 
 
@@ -551,9 +580,8 @@ def payment_fail(request, order_id):
 
     order.status = 'canceled'
 
-
     order.save()
-    return redirect('')
+    return redirect('checkout')
 
 
 
@@ -565,43 +593,8 @@ def payment_cancel(request, order_id):
 
     order.status = 'canceled'
 
-
     order.save()
-    return redirect('')
-
-
-
-
-# 4. Payment Process
-# We Need SSL Commerz
-
-def payment_process(request):
-
-    # session id used to get the information of the order
-
-    order_id = request.session.get('order_id')
-
-    if not order_id:
-        return redirect('')
-    
-    order = get_object_or_404(models.Order, id=order_id)
-    payment_data = sslcommerz.generate_sslcommerz_payment(request, order)
-    
-
-    if payment_data['status'] == 'SUCCESS':
-        return redirect('')
-    else:
-        messages.error(request, 'Payment gateway error. Please Try again.')
-        return redirect('')
-
-
-
-
-
-
-
-
-
+    return redirect('cart_detail')
 
 
 

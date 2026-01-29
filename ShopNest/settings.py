@@ -55,7 +55,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    #  "allauth.account.middleware.AccountMiddleware",
+    'allauth.account.middleware.AccountMiddleware'
 
 ]
 
@@ -64,7 +64,7 @@ ROOT_URLCONF = 'ShopNest.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
