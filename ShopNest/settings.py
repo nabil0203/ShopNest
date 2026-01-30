@@ -130,14 +130,15 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 ALLOWED_HOSTS = [
-    'taskify-cq2h.onrender.com',
+    'https://shopnest-4thm.onrender.com',
+    'shopnest-4thm.onrender.com',
     'localhost',
     '127.0.0.1',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://taskify-cq2h.onrender.com',
-    'https://*.onrender.com',
+    'https://shopnest-4thm.onrender.com',
+    
 ]
 
 
