@@ -32,6 +32,6 @@ urlpatterns = [
     path('payment/cancel/<int:order_id>/', views.payment_cancel, name="payment_cancel"),
     
     # profile
-    #  path('profile/', views.profile, name="profile"),
+    path('profile/', views.profile_view, name="profile"),
 
 ]

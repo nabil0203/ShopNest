@@ -25,6 +25,7 @@
         height: 100%;
         background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path fill="rgba(255,255,255,0.1)" d="M0 100 C 20 0 50 0 100 100 Z"></path></svg>');
         background-size: 100% 100%;
+        pointer-events: none;
     }
     
     .hero-title {
@@ -41,8 +42,8 @@
     }
     
     .hero-btn {
-        padding: 12px 30px;
-        font-size: 1.1rem;
+        padding: 1rem 2rem;
+        font-size: 1.3rem;
         text-transform: uppercase;
         font-weight: 600;
         letter-spacing: 1px;
@@ -50,14 +51,14 @@
         transition: all 0.3s ease;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         background-color: white;
-        color: #6a11cb;
+        color: #240913;
         border: none;
     }
     
     .hero-btn:hover {
         transform: translateY(-3px);
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-        background-color: #f8f9fa;
+        background-color: #58e318;
         color: #6a11cb;
     }
     
@@ -295,10 +296,17 @@
 {% endblock %}
 
 {% block content %}
+
 <!-- Hero Section -->
-<div class="hero-section">
+<div class="hero-section py-5">
     <div class="container">
         <div class="row align-items-center">
+            <!-- Image Column -->
+            <div class="col-lg-5 d-none d-lg-block text-center">
+                <img src="{% static 'welcome.png' %}" alt="Welcome to ShopNest" class="img-fluid rounded-3">
+            </div>
+
+            <!-- Text Column -->
             <div class="col-lg-7">
                 <h1 class="hero-title">Welcome to ShopNest</h1>
                 <p class="hero-subtitle">Discover premium products at unbeatable prices!</p>
@@ -307,18 +315,108 @@
                     <i class="fas fa-shopping-bag me-2"></i>Explore Collection
                 </a>
             </div>
-            <div class="col-lg-5 d-none d-lg-block">
-                <div class="text-center">
-                    <img src="{% static 'welcome.jpg' %}" alt="Welcome to ShopNest" class="img-fluid rounded-3">
-                </div>
-            </div>
         </div>
     </div>
 </div>
 
+
+
+
+<!-- Featured Products Section -->
+<div class="container">
+    <div class="section-header">
+        <h2 class="section-title">Featured Products</h2>
+        <p class="section-subtitle">Check out our most popular items loved by our customers</p>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+        {% for product in featured_products %}
+     
+        <div class="col">
+            <div class="card h-100 product-card">
+                <div class="product-img-container">
+                    {% if product.image %}
+                    <img src="{{ product.image.url }}" class="product-img" alt="{{ product.name }}">
+                    {% else %}
+                    <div class="bg-light text-center p-5">
+                        <i class="fas fa-image fa-3x text-muted"></i>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <h5 class="product-title">{{ product.name }}</h5>
+                    <p class="product-desc">{{ product.description|truncatechars:100 }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="product-price">৳{{ product.price }}</span>
+                        <div class="rating">
+                            {% for i in "12345" %}
+                            {% if forloop.counter <= product.average_rating %}
+                            <i class="fas fa-star"></i>
+                            {% else %}
+                            <i class="far fa-star"></i>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-white p-4">
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'product_detail' product.slug %}" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-eye me-1"></i> View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">No featured products available at the moment.</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+
+
+<!-- Shop by Category Section -->
+<div class="container my-5 pt-5">
+    <div class="section-header">
+        <h2 class="section-title">Shop by Category</h2>
+        <p class="section-subtitle">Explore our wide range of product categories</p>
+    </div>
+    
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for category in categories %}
+        <div class="col">
+            <div class="card h-100 category-card">
+                <div class="card-body text-center py-4">
+                    <div class="category-icon">
+                        <i class="fas fa-{% if forloop.counter == 1 %}tshirt{% elif forloop.counter == 2 %}laptop{% elif forloop.counter == 3 %}mobile-alt{% elif forloop.counter == 4 %}home{% elif forloop.counter == 5 %}shoe-prints{% else %}tag{% endif %}"></i>
+                    </div>
+                    <h3 class="category-title">{{ category.name }}</h3>
+                    <p class="card-text">{{ category.description|truncatechars:100 }}</p>
+                    <a href="{% url 'product_list_by_category' category.slug %}" class="btn category-btn">
+                        Browse {{ category.name }}
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">No categories available at the moment.</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+
+
+
 <!-- Features Section -->
-<div class="container mb-5">
-    <div class="row g-4">
+<div class="container my-5">
+    <div class="row features-section">
         <div class="col-md-3">
             <div class="feature-item">
                 <div class="feature-icon">
@@ -358,64 +456,7 @@
     </div>
 </div>
 
-<!-- Featured Products Section -->
-<div class="container">
-    <div class="section-header">
-        <h2 class="section-title">Featured Products</h2>
-        <p class="section-subtitle">Check out our most popular items loved by our customers</p>
-    </div>
 
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
-        {% for product in featured_products %}
-        <div class="col">
-            <div class="card h-100 product-card">
-                <div class="product-img-container">
-                    {% if product.image %}
-                    <img src="{{ product.image.url }}" class="product-img" alt="{{ product.name }}">
-                    {% else %}
-                    <div class="bg-light text-center p-5">
-                        <i class="fas fa-image fa-3x text-muted"></i>
-                    </div>
-                    {% endif %}
-                </div>
-                <div class="card-body">
-                    <h5 class="product-title">{{ product.name }}</h5>
-                    <p class="product-desc">{{ product.description|truncatechars:100 }}</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="product-price">৳{{ product.price }}</span>
-                        <div class="rating">
-                            {% for i in "12345" %}
-                            {% if forloop.counter <= product.average_rating %}
-                            <i class="fas fa-star"></i>
-                            {% else %}
-                            <i class="far fa-star"></i>
-                            {% endif %}
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-                <div class="card-footer">
-                    <div class="d-grid gap-2">
-                        <a href="{% url 'product_detail' product.slug %}" class="btn btn-sm btn-outline-primary">
-                            <i class="fas fa-eye me-1"></i> View Details
-                        </a>
-                        <form action="{% url 'cart_add' product.id %}" method="post">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-sm btn-primary w-100">
-                                <i class="fas fa-shopping-cart me-1"></i> Add to Cart
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% empty %}
-        <div class="col-12">
-            <div class="alert alert-info">No featured products available at the moment.</div>
-        </div>
-        {% endfor %}
-    </div>
-</div>
 
 <!-- Banner Section -->
 <div class="container mt-5 mb-5">
@@ -434,36 +475,10 @@
     </div>
 </div>
 
-<!-- Shop by Category Section -->
-<div class="container">
-    <div class="section-header">
-        <h2 class="section-title">Shop by Category</h2>
-        <p class="section-subtitle">Explore our wide range of product categories</p>
-    </div>
-    
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-        {% for category in categories %}
-        <div class="col">
-            <div class="card h-100 category-card">
-                <div class="card-body text-center py-4">
-                    <div class="category-icon">
-                        <i class="fas fa-{% if forloop.counter == 1 %}tshirt{% elif forloop.counter == 2 %}laptop{% elif forloop.counter == 3 %}mobile-alt{% elif forloop.counter == 4 %}home{% elif forloop.counter == 5 %}shoe-prints{% else %}tag{% endif %}"></i>
-                    </div>
-                    <h3 class="category-title">{{ category.name }}</h3>
-                    <p class="card-text">{{ category.description|truncatechars:100 }}</p>
-                    <a href="{% url 'product_list_by_category' category.slug %}" class="btn category-btn">
-                        Browse {{ category.name }}
-                    </a>
-                </div>
-            </div>
-        </div>
-        {% empty %}
-        <div class="col-12">
-            <div class="alert alert-info">No categories available at the moment.</div>
-        </div>
-        {% endfor %}
-    </div>
-</div>
+
+
+
+{% comment %} 
 
 <!-- Newsletter Section -->
 <div class="container my-5">
@@ -484,4 +499,8 @@
         </div>
     </div>
 </div>
+
+{% endcomment %}
+
+
 {% endblock %}

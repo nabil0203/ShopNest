@@ -10,9 +10,11 @@ from django.db.models import Q, Min, Max, Avg
 
 from . import forms
 
-from . import sslcommerz
+from .sslcommerz import generate_sslcommerz_payment, send_order_confirmation_email
 
 from django.contrib.auth.decorators import login_required
+
+from django.views.decorators.csrf import csrf_exempt
 
 
 
@@ -350,16 +352,18 @@ def cart_add(request,product_id):
     # add items into cart
     try:
         cart_item = models.CartItem.objects.get(cart=cart, product=product)                                   # if the item is already in the cart
-        cart_item.quantity += 1                                                                               # then just increase the quantity
-        cart_item.save()
+        # Check if adding 1 more unit exceeds stock
+        if cart_item.quantity >= product.stock:
+            messages.warning(request, f"Cannot add more {product.name}. Only {product.stock} in stock!")
+        else:
+            cart_item.quantity += 1                                                                               # then just increase the quantity
+            cart_item.save()
+            messages.success(request, f"{product.name} has been added to your cart!")
 
 
     except models.CartItem.DoesNotExist:                                                                   # if the item is not in the cart(empty cart)
         models.CartItem.objects.create(cart=cart, product = product, quantity = 1)                         # then add the item in the cart; initial item quantity = 1
-
-
-
-    messages.success(request, f"{product.name} has been added to your cart!")
+        messages.success(request, f"{product.name} has been added to your cart!")
 
     return redirect('product_detail', slug=product.slug)
 
@@ -385,8 +389,10 @@ def cart_update(request,product_id):
 
 
    
-    # soap -> in stock 20 products
-    # user, soap -> 40 pieces added to the cart❌❌
+    # Check stock validation
+    if quantity > product.stock:
+        messages.warning(request, f"Cannot add {quantity} items. Only {product.stock} in stock!")
+        quantity = product.stock  # Set to max available stock
 
 
     # user, soap -> 5, 4, 3, 2, 1, 0
@@ -446,6 +452,7 @@ def cart_remove(request,product_id):
 # 4. Payment gateway
 # full transition:- Product --> Cart Item --> Order Item
 
+@csrf_exempt                                                                    # to secure payment related workflow
 @login_required
 def checkout(request):
 
@@ -491,7 +498,7 @@ def checkout(request):
     else:
         form = forms.CheckoutForm()
 
-    
+     
     context = {
         'cart' : cart,
         'form' : form
@@ -516,6 +523,7 @@ def checkout(request):
 # 0. Payment Process
 # We Need SSL Commerz
 
+@csrf_exempt
 @login_required
 def payment_process(request):
 
@@ -527,11 +535,12 @@ def payment_process(request):
         return redirect('home')
     
     order = get_object_or_404(models.Order, id=order_id)
-    payment_data = sslcommerz.generate_sslcommerz_payment(request, order)
+    payment_data = generate_sslcommerz_payment(request, order)
     
 
     if payment_data['status'] == 'SUCCESS':
-        return redirect('payment_data[GatewayPageURL]')
+        return redirect(payment_data['GatewayPageURL'])
+
     else:
         messages.error(request, 'Payment gateway error. Please Try again.')
         return redirect('checkout')
@@ -543,6 +552,7 @@ def payment_process(request):
 
 
 # 1. Payment Success
+@csrf_exempt
 @login_required
 def payment_success(request, order_id):
     order = get_object_or_404(models.Order, id = order_id, user=request.user)
@@ -573,10 +583,11 @@ def payment_success(request, order_id):
 
 
     # Send Confirmation email
+    send_order_confirmation_email(order)
 
     messages.success(request, 'Payment Successful')
 
-    return render(request, 'shop/payment_success.html', {'order': order})
+    return render(request, 'shop/payment_success.html', {'order' : order})
 
 
 
@@ -585,6 +596,7 @@ def payment_success(request, order_id):
 
 
 # 2. Payment Failed
+@csrf_exempt
 @login_required
 def payment_fail(request, order_id):
     order = get_object_or_404(models.Order, id = order_id, user=request.user)
@@ -599,6 +611,7 @@ def payment_fail(request, order_id):
 
 
 # 3. Payment Cancel
+@csrf_exempt
 @login_required
 def payment_cancel(request, order_id):
     order = get_object_or_404(models.Order, id = order_id, user=request.user)
@@ -615,3 +628,28 @@ def payment_cancel(request, order_id):
 
 
 
+# profile view
+@login_required
+def profile_view(request):
+    tab = request.GET.get('tab')                                                     # which tab is active               
+    orders = models.Order.objects.filter(user = request.user)
+    completed_orders = orders.filter(status = 'delivered')
+
+    total_spent = sum(order.get_total_cost() for order in orders)
+    order_history_active = (tab == 'orders')                                          # true if 'orders' tab is active, else false    
+
+    for order in orders:
+        print(order.id, "status:", order.status, "display:", order.get_status_display())
+
+
+
+    context = {
+        'user' : request.user,
+        'orders' : orders,
+        'completed_orders' : completed_orders,
+        'total_spent' : total_spent,
+        'order_history_active' : order_history_active
+    }
+   
+
+    return render(request, 'shop/profile.html', context)    

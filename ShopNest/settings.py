@@ -82,6 +82,19 @@ TEMPLATES = [
     },
 ]
 
+
+
+
+AUTHENTICATION_BACKENDS = [
+
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by email
+    'allauth.account.auth_backends.AuthenticationBackend',
+    
+]
+
 WSGI_APPLICATION = 'ShopNest.wsgi.application'
 
 
@@ -113,6 +126,23 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+
+
+ALLOWED_HOSTS = [
+    'taskify-cq2h.onrender.com',
+    'localhost',
+    '127.0.0.1',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://taskify-cq2h.onrender.com',
+    'https://*.onrender.com',
+]
+
+
+
+
 
 
 # Internationalization
@@ -154,23 +184,32 @@ ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 
 
 
+# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
+
+
+
+import environ
+
+# Initialise environment variables
+env = environ.Env()
+environ.Env.read_env()
+
+
 
 
 
 # SSL Commerz setup
-SSLCOMMERZ_STORE_ID = 'shopn69785c87a4d20'
-SSLCOMMERZ_STORE_PASSWORD = 'shopn69785c87a4d20@ssl'
-SSLCOMMERZ_PAYMENT_URL = 'https://sandbox.sslcommerz.com/gwprocess/v4/api.php'
-SSLCOMMERZ_VALIDATION_URL = 'https://sandbox.sslcommerz.com/validator/api/validationserverAPI.php'
+SSLCOMMERZ_STORE_ID = env('SSLCOMMERZ_STORE_ID')
+SSLCOMMERZ_STORE_PASSWORD = env('SSLCOMMERZ_STORE_PASSWORD')
+SSLCOMMERZ_PAYMENT_URL = env('SSLCOMMERZ_PAYMENT_URL')
+SSLCOMMERZ_VALIDATION_URL = env('SSLCOMMERZ_VALIDATION_URL')
 
 
-
-
-
-# Email Setup
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'nabilchowdhury0203@gmail.com'
-EMAIL_HOST_PASSWORD = 'hajocskvlpwjqrdi'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+# Email setup
+EMAIL_BACKEND = env('EMAIL_BACKEND')
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+DEFAULT_FROM_EMAIL = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = env('EMAIL_PORT')
+EMAIL_USE_TLS = env('EMAIL_USE_TLS')

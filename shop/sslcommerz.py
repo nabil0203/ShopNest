@@ -20,6 +20,7 @@ def generate_sslcommerz_payment(request,order):
         'cancel_url': request.build_absolute_uri(f'/payment/cancel/{order.id}/'),
         'cus_name': f"{order.first_name} {order.last_name}",
         'cus_email': order.email,
+        'cus_phone': order.phone,
         'cus_add1': order.address,
         'cus_city': order.city,
         'cus_postcode': order.postal_code,
@@ -31,6 +32,7 @@ def generate_sslcommerz_payment(request,order):
     }
     
     response = requests.post(settings.SSLCOMMERZ_PAYMENT_URL, data=post_data)                       # getting a response in JSON format
+
     return json.loads(response.text)                                                                # Converting the JSON response text ---> into Python Object
 
 
@@ -42,16 +44,16 @@ def generate_sslcommerz_payment(request,order):
 # confirmation email
 def send_order_confirmation_email(order):
     subject = f'ShopNest Order Confirmation - Order #{order.id}'
-    message = render_to_string('', {'order' : order})                                               # "render_to_string" used to convert HTML into string
-                                                                                                    # the emails will be designed in HTML template
-                                                                                                    # But email can't decode the HTML, that is why 'render_to_string' used to convert
+    message = render_to_string('shop/email/order_confirmation.html', {'order': order})                                               # "render_to_string" used to convert HTML into string
+                                                                                                         # the emails will be designed in HTML template
+                                                                                                          # But email can't decode the HTML, that is why 'render_to_string' used to convert
 
     to = order.email
-    send_email = EmailMultiAlternatives(subject, '', to=[to])                                       # "subject, '', to=[to]" --> the blank('') part is the message part of email
-                                                                                                    # blank because I want to send a HTML message, not any normal message
+    send_email = EmailMultiAlternatives(subject, '', to=[to])                                              # "subject, '', to=[to]" --> the blank('') part is the message part of email
+                                                                                                           # blank because I want to send a HTML message, not any normal message
 
 
-    send_email.attach_alternative(message, 'text/html')                                             # passing the HTML message into "attach_alternative" method and saying the message will be HTML or Text
+    send_email.attach_alternative(message, 'text/html')                                                     # passing the HTML message into "attach_alternative" method and saying the message will be HTML or Text
     send_email.send()
     
 

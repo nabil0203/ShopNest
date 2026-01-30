@@ -175,7 +175,7 @@ class Order(models.Model):
 
 
     def __str__(self):
-        return f"Order #{self.id}"              # Order #2
+        return f"Order #{self.id}"                       # Order #2
 
 
     def get_total_cost(self):

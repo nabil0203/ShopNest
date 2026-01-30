@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}My Profile | ShopNest{% endblock %}
+{% block title %}My Profile | E-Shop{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -510,7 +510,7 @@
                         <div class="col-md-3 col-6">
                             <div class="order-info-label">Total Amount</div>
                             <div class="order-info-value">
-                                <i class="fas fa-dollar-sign me-1 text-primary"></i> {{ order.get_total_cost }}
+                                ৳ {{ order.get_total_cost }}
                             </div>
                         </div>
                         <div class="col-md-3 col-6">
@@ -585,8 +585,8 @@
                                     <td class="text-center">৳{{ item.price }}</td>
                                     <td class="text-center">{{ item.quantity }}</td>
                                     <td class="text-center fw-bold">৳{{ item.get_cost }}</td>
-                                    <td class="text-center">
-                                        <a href="{% url 'product_detail' item.product.slug %}" class="btn btn-sm btn-outline-secondary mb-1">
+                                    <td class="text-center align-middle">
+                                        <a href="{% url 'product_detail' item.product.slug %}" class="btn btn-sm btn-outline-secondary">
                                             <i class="fas fa-eye me-1"></i> View
                                         </a>
                                         {% if order.paid %}

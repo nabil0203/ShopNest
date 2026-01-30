@@ -1,0 +1,17 @@
+asgiref
+certifi
+cffi
+charset-normalizer
+cryptography
+Django
+django-allauth
+django-environ
+idna
+pillow
+pycparser
+PyJWT
+requests
+sqlparse
+sslcommerz-lib
+tzdata
+urllib3
