@@ -553,7 +553,6 @@ def payment_process(request):
 
 # 1. Payment Success
 @csrf_exempt
-@login_required
 def payment_success(request, order_id):
     order = get_object_or_404(models.Order, id = order_id, user=request.user)
 
