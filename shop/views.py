@@ -552,20 +552,57 @@ def payment_process(request):
 
 
 # 1. Payment Success
+
+# @csrf_exempt
+# @login_required
+# def payment_success(request, order_id):
+#     order = get_object_or_404(models.Order, id = order_id, user=request.user)
+
+
+#     order.paid = True                                           # order --> paid
+#     order.status = 'processing'                                 # order status --> processing
+#     order.transaction_id = order.id                             # take transaction id
+#     order.save()
+
+
+#     # get all the order items
+#     order_items = order.order_items.all()
+
+
+#     # for each item:
+#     for item in order_items:
+#         product = item.product                                  # get the exact one product each time
+#         product.stock -= item.quantity                          # product stock --> decrease
+
+#         if product.stock < 0:
+#             product.stock = 0                                    # if negative value comes by any issue, make stock 0
+#         product.save()
+
+#     # Send Confirmation email
+#     send_order_confirmation_email(order)
+
+#     messages.success(request, 'Payment Successful')
+
+#     return render(request, 'shop/payment_success.html', {'order' : order})
+
+
+
+# 1. Payment Success 
+# another way to handle payment success
 @csrf_exempt
 def payment_success(request, order_id):
-    order = get_object_or_404(models.Order, id = order_id, user=request.user)
+    order = get_object_or_404(models.Order, id=order_id)
 
+    if order.paid:
+        return render(request, 'shop/payment_success.html', {'order': order})
 
-    order.paid = True                                           # order --> paid
-    order.status = 'processing'                                 # order status --> processing
-    order.transaction_id = order.id                             # take transaction id
+    order.paid = True
+    order.status = 'processing'
+    order.transaction_id = request.POST.get('tran_id', f"TXN-{order.id}")
     order.save()
-
 
     # get all the order items
     order_items = order.order_items.all()
-
 
     # for each item:
     for item in order_items:
@@ -573,20 +610,17 @@ def payment_success(request, order_id):
         product.stock -= item.quantity                          # product stock --> decrease
 
 
-
         if product.stock < 0:
             product.stock = 0                                    # if negative value comes by any issue, make stock 0
     
         product.save()
-
-
+        
 
     # Send Confirmation email
     send_order_confirmation_email(order)
 
-    messages.success(request, 'Payment Successful')
+    return render(request, 'shop/payment_success.html', {'order': order})
 
-    return render(request, 'shop/payment_success.html', {'order' : order})
 
 
 

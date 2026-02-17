@@ -39,7 +39,9 @@ CSRF_TRUSTED_ORIGINS = ['https://shopnest-4thm.onrender.com']
 
 # 3. ENSURE COOKIES ARE SENT
 SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SAMESITE = 'None'
 CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = 'None'
 
 
 # Application definition
