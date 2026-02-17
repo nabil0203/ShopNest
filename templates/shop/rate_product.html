@@ -3,46 +3,44 @@
 {% block title %}Rate {{ product.name }} | ShopNest{% endblock %}
 
 {% block content %}
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-        <li class="breadcrumb-item"><a href="{% url 'product_detail' product.slug %}">{{ product.name }}</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Write a Review</li>
+<nav aria-label="breadcrumb" class="mb-6">
+    <ol class="flex flex-wrap gap-2 text-sm">
+        <li><a class="text-orange-500 hover:text-orange-600 font-medium" href="{% url 'home' %}">Home</a></li>
+        <li class="text-gray-400">/</li>
+        <li><a class="text-orange-500 hover:text-orange-600 font-medium" href="{% url 'product_detail' product.slug %}">{{ product.name }}</a></li>
+        <li class="text-gray-400">/</li>
+        <li class="text-gray-900 font-medium">Write a Review</li>
     </ol>
 </nav>
 
-<div class="row justify-content-center">
-    <div class="col-lg-8">
-        <div class="card shadow">
-            <div class="card-header">
-                <h5 class="mb-0">Rate {{ product.name }}</h5>
+<div class="flex justify-center">
+    <div class="w-full max-w-2xl">
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+            <div class="border-b border-gray-100 px-6 py-4">
+                <h5 class="font-semibold text-gray-900">Rate {{ product.name }}</h5>
             </div>
-            <div class="card-body">
-                <div class="d-flex align-items-center mb-4">
+            <div class="p-6">
+                <div class="flex items-center gap-4 mb-6">
                     <div class="flex-shrink-0">
                         {% if product.image %}
-                        <img src="{{ product.image.url }}" alt="{{ product.name }}" 
-                             class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-24 h-24 object-cover rounded-lg">
                         {% else %}
-                        <div class="bg-light text-center" style="width: 100px; height: 100px;">
-                            <i class="fas fa-image fa-3x text-muted d-flex justify-content-center align-items-center h-100"></i>
+                        <div class="w-24 h-24 bg-gray-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-image fa-3x text-gray-400"></i>
                         </div>
                         {% endif %}
                     </div>
-                    <div class="flex-grow-1 ms-3">
-                        <h5 class="mb-1">{{ product.name }}</h5>
-                        <p class="text-muted mb-0">{{ product.category.name }}</p>
+                    <div>
+                        <h5 class="font-semibold text-gray-900">{{ product.name }}</h5>
+                        <p class="text-gray-600 text-sm">{{ product.category.name }}</p>
                     </div>
                 </div>
                 
-                <form method="post">
+                <form method="post" class="space-y-4">
                     {% csrf_token %}
-                    
-                    <div class="mb-3">
-                        <label for="{{ form.rating.id_for_label }}" class="form-label">Rating</label>
-                        {{ form.rating.errors }}
-                        <select class="form-select {% if form.rating.errors %}is-invalid{% endif %}" 
-                                id="{{ form.rating.id_for_label }}" name="{{ form.rating.html_name }}" required>
+                    <div>
+                        <label for="{{ form.rating.id_for_label }}" class="block font-medium text-gray-700 mb-1">Rating</label>
+                        <select id="{{ form.rating.id_for_label }}" name="{{ form.rating.html_name }}" required class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 {% if form.rating.errors %}border-red-500{% endif %}">
                             <option value="" disabled {% if not form.rating.value %}selected{% endif %}>Select rating</option>
                             <option value="5" {% if form.rating.value == 5 %}selected{% endif %}>★★★★★ (5) Excellent</option>
                             <option value="4" {% if form.rating.value == 4 %}selected{% endif %}>★★★★☆ (4) Very Good</option>
@@ -50,18 +48,16 @@
                             <option value="2" {% if form.rating.value == 2 %}selected{% endif %}>★★☆☆☆ (2) Fair</option>
                             <option value="1" {% if form.rating.value == 1 %}selected{% endif %}>★☆☆☆☆ (1) Poor</option>
                         </select>
+                        {% if form.rating.errors %}<p class="text-red-500 text-sm mt-1">{{ form.rating.errors }}</p>{% endif %}
                     </div>
-                    
-                    <div class="mb-3">
-                        <label for="{{ form.comment.id_for_label }}" class="form-label">Your Review</label>
-                        {{ form.comment.errors }}
-                        <textarea class="form-control {% if form.comment.errors %}is-invalid{% endif %}" 
-                                  id="{{ form.comment.id_for_label }}" name="{{ form.comment.html_name }}" rows="5">{{ form.comment.value|default:'' }}</textarea>
+                    <div>
+                        <label for="{{ form.comment.id_for_label }}" class="block font-medium text-gray-700 mb-1">Your Review</label>
+                        <textarea id="{{ form.comment.id_for_label }}" name="{{ form.comment.html_name }}" rows="5" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 {% if form.comment.errors %}border-red-500{% endif %}">{{ form.comment.value|default:'' }}</textarea>
+                        {% if form.comment.errors %}<p class="text-red-500 text-sm mt-1">{{ form.comment.errors }}</p>{% endif %}
                     </div>
-                    
-                    <div class="d-flex justify-content-between">
-                        <a href="{% url 'product_detail' product.slug %}" class="btn btn-outline-secondary">Cancel</a>
-                        <button type="submit" class="btn btn-primary">Submit Review</button>
+                    <div class="flex justify-between gap-4">
+                        <a href="{% url 'product_detail' product.slug %}" class="border border-gray-300 text-gray-700 hover:bg-gray-50 px-6 py-2 rounded-lg font-medium transition duration-300">Cancel</a>
+                        <button type="submit" class="bg-orange-500 text-white px-6 py-2 rounded-lg font-medium hover:bg-black transition duration-300">Submit Review</button>
                     </div>
                 </form>
             </div>

@@ -2,505 +2,207 @@
 {% load static %}
 {% block title %}ShopNest - Home{% endblock %}
 
-{% block extra_css %}
-<style>
-    /* Hero Section */
-    .hero-section {
-        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-        color: white;
-        border-radius: 15px;
-        overflow: hidden;
-        position: relative;
-        padding: 4rem 2rem;
-        margin-bottom: 4rem;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    }
-    
-    .hero-section::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path fill="rgba(255,255,255,0.1)" d="M0 100 C 20 0 50 0 100 100 Z"></path></svg>');
-        background-size: 100% 100%;
-        pointer-events: none;
-    }
-    
-    .hero-title {
-        font-weight: 800;
-        font-size: 3rem;
-        margin-bottom: 1rem;
-        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    }
-    
-    .hero-subtitle {
-        font-size: 1.5rem;
-        margin-bottom: 2rem;
-        opacity: 0.9;
-    }
-    
-    .hero-btn {
-        padding: 1rem 2rem;
-        font-size: 1.3rem;
-        text-transform: uppercase;
-        font-weight: 600;
-        letter-spacing: 1px;
-        border-radius: 50px;
-        transition: all 0.3s ease;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        background-color: white;
-        color: #240913;
-        border: none;
-    }
-    
-    .hero-btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-        background-color: #58e318;
-        color: #6a11cb;
-    }
-    
-    /* Section Headers */
-    .section-header {
-        text-align: center;
-        margin-bottom: 2.5rem;
-        position: relative;
-    }
-    
-    .section-title {
-        font-weight: 700;
-        font-size: 2.2rem;
-        color: #333;
-        margin-bottom: 1rem;
-        position: relative;
-        display: inline-block;
-    }
-    
-    .section-title:after {
-        content: '';
-        position: absolute;
-        width: 50%;
-        height: 4px;
-        background: linear-gradient(to right, #6a11cb, #2575fc);
-        bottom: -10px;
-        left: 25%;
-        border-radius: 10px;
-    }
-    
-    .section-subtitle {
-        color: #6c757d;
-        max-width: 600px;
-        margin: 0 auto;
-    }
-    
-    /* Product Cards */
-    .product-card {
-        border: none;
-        border-radius: 15px;
-        overflow: hidden;
-        transition: all 0.3s ease;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-    }
-    
-    .product-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-    }
-    
-    .product-img-container {
-        height: 200px;
-        overflow: hidden;
-        position: relative;
-    }
-    
-    .product-img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.5s ease;
-    }
-    
-    .product-card:hover .product-img {
-        transform: scale(1.1);
-    }
-    
-    .product-title {
-        font-weight: 600;
-        font-size: 1.2rem;
-        margin-top: 0.5rem;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        height: 3rem;
-    }
-    
-    .product-desc {
-        color: #6c757d;
-        font-size: 0.9rem;
-        margin-bottom: 1rem;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        height: 4rem;
-    }
-    
-    .product-price {
-        font-weight: 700;
-        color: #212529;
-        font-size: 1.2rem;
-    }
-    
-    .rating {
-        color: #ffc107;
-    }
-    
-    .card-footer {
-        background-color: white;
-        border-top: 1px solid rgba(0, 0, 0, 0.05);
-    }
-    
-    .btn-outline-primary {
-        border-color: #6a11cb;
-        color: #6a11cb;
-    }
-    
-    .btn-outline-primary:hover {
-        background-color: #6a11cb;
-        border-color: #6a11cb;
-        color: white;
-    }
-    
-    .btn-primary {
-        background-color: #6a11cb;
-        border-color: #6a11cb;
-    }
-    
-    .btn-primary:hover {
-        background-color: #5a0cb8;
-        border-color: #5a0cb8;
-    }
-    
-    /* Category Cards */
-    .category-card {
-        border: none;
-        border-radius: 15px;
-        overflow: hidden;
-        transition: all 0.3s ease;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        position: relative;
-    }
-    
-    .category-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-    }
-    
-    .category-icon {
-        font-size: 3rem;
-        margin-bottom: 1rem;
-        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-    
-    .category-title {
-        font-weight: 700;
-        margin-bottom: 0.5rem;
-        font-size: 1.5rem;
-    }
-    
-    .category-btn {
-        border: none;
-        background-color: #f8f9fa;
-        color: #6a11cb;
-        border-radius: 50px;
-        padding: 8px 25px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-    }
-    
-    .category-btn:hover {
-        background-color: #6a11cb;
-        color: white;
-        transform: translateY(-3px);
-    }
-    
-    /* Divider */
-    .section-divider {
-        margin: 5rem 0;
-        position: relative;
-        height: 1px;
-    }
-    
-    .section-divider::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 5%;
-        right: 5%;
-        height: 1px;
-        background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.1), transparent);
-    }
-    
-    /* Features Section */
-    .features-section {
-        background-color: #f8f9fa;
-        padding: 4rem 0;
-        border-radius: 15px;
-        margin: 3rem 0;
-    }
-    
-    .feature-item {
-        text-align: center;
-        padding: 1.5rem;
-    }
-    
-    .feature-icon {
-        font-size: 2.5rem;
-        margin-bottom: 1rem;
-        color: #6a11cb;
-    }
-    
-    .feature-title {
-        font-weight: 600;
-        font-size: 1.2rem;
-        margin-bottom: 0.5rem;
-    }
-    
-    .feature-desc {
-        color: #6c757d;
-        font-size: 0.9rem;
-    }
-    
-    /* Mobile Responsiveness */
-    @media (max-width: 768px) {
-        .hero-title {
-            font-size: 2.2rem;
-        }
-        
-        .hero-subtitle {
-            font-size: 1.2rem;
-        }
-        
-        .section-title {
-            font-size: 1.8rem;
-        }
-    }
-</style>
-{% endblock %}
-
 {% block content %}
 
-<!-- Hero Section -->
-<div class="hero-section py-5">
-    <div class="container">
-        <div class="row align-items-center">
-            <!-- Image Column -->
-            <div class="col-lg-5 d-none d-lg-block text-center">
-                <img src="{% static 'welcome.png' %}" alt="Welcome to ShopNest" class="img-fluid rounded-3">
+{% comment %} <!-- Hero Section -->
+<div class="bg-gradient-to-r from-orange-500 via-white to-black rounded-2xl overflow-hidden shadow-lg mb-12 p-8 md:p-12 lg:p-16">
+    <div class="max-w-7xl mx-auto">
+        <div class="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+            <div class="hidden lg:block lg:w-2/5 flex-shrink-0">
+                <img src="{% static 'welcome.png' %}" alt="Welcome to ShopNest" class="rounded-2xl w-full object-cover">
             </div>
-
-            <!-- Text Column -->
-            <div class="col-lg-7">
-                <h1 class="hero-title">Welcome to ShopNest</h1>
-                <p class="hero-subtitle">Discover premium products at unbeatable prices!</p>
-                <p class="mb-4">Shop our extensive catalog of high-quality products curated just for you.</p>
-                <a class="btn hero-btn" href="{% url 'product_list' %}">
-                    <i class="fas fa-shopping-bag me-2"></i>Explore Collection
+            <div class="flex-1 text-center lg:text-left">
+                <h1 class="font-extrabold text-3xl md:text-4xl lg:text-5xl mb-4 text-gray-900">Welcome to ShopNest</h1>
+                <p class="text-xl md:text-2xl mb-4 text-gray-700">Discover premium products at unbeatable prices!</p>
+                <p class="mb-6 text-gray-600">Shop our extensive catalog of high-quality products curated just for you.</p>
+                <a class="inline-flex items-center gap-2 bg-orange-500 text-white px-8 py-4 rounded-lg font-semibold hover:bg-black transition duration-300 text-lg" href="{% url 'product_list' %}">
+                    <i class="fas fa-shopping-bag"></i> Explore Collection
                 </a>
             </div>
         </div>
     </div>
-</div>
+</div> {% endcomment %}
 
+
+<!-- Hero Section -->
+<section class="relative mb-10 rounded-3xl overflow-hidden shadow-xl">
+    
+    <!-- Gradient Background -->
+    <div class="absolute inset-0 bg-gradient-to-br from-orange-600 via-orange-200 to-gray-900"></div>
+
+    <!-- Soft Overlay -->
+    <div class="absolute inset-0 bg-white/30 backdrop-blur-sm"></div>
+
+    <div class="relative max-w-7xl mx-auto px-6 py-10 md:py-12">
+        <div class="flex flex-col lg:flex-row items-center gap-8">
+
+            <!-- Smaller Image -->
+            <div class="hidden lg:block lg:w-1/3">
+                <img src="{% static 'welcome.png' %}" 
+                     alt="Welcome to ShopNest" 
+                     class="rounded-2xl shadow-lg w-full max-h-72 object-contain">
+            </div>
+
+            <!-- Content -->
+            <div class="flex-1 text-center lg:text-left">
+
+                <h1 class="font-extrabold text-3xl md:text-4xl lg:text-5xl mb-4 text-black leading-tight">
+                    Welcome to 
+                    <span class="text-orange-500">ShopNest</span>
+                </h1>
+
+                <p class="text-base md:text-lg text-gray-800 mb-3">
+                    Discover premium products at unbeatable prices.
+                </p>
+
+                <p class="text-gray-700 mb-6 max-w-lg mx-auto lg:mx-0 text-sm md:text-base">
+                    Shop our curated collection designed to bring quality and value into your everyday life.
+                </p>
+
+                <a href="{% url 'product_list' %}"
+                   class="inline-flex items-center gap-2 bg-orange-500 text-white text-lg font-bold px-6 py-3 rounded-xl shadow-md hover:bg-black transition duration-300">
+                    <i class="fas fa-shopping-bag"></i>
+                    Explore Collection
+                </a>
+
+            </div>
+
+        </div>
+    </div>
+</section>
 
 
 
 <!-- Featured Products Section -->
-<div class="container">
-    <div class="section-header">
-        <h2 class="section-title">Featured Products</h2>
-        <p class="section-subtitle">Check out our most popular items loved by our customers</p>
+<div class="max-w-7xl mx-auto mb-12">
+    <div class="text-center mb-10">
+        <h2 class="font-bold text-2xl md:text-3xl text-gray-900 mb-2">Featured Products</h2>
+        <p class="text-gray-600 max-w-xl mx-auto">Check out our most popular items loved by our customers</p>
     </div>
 
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {% for product in featured_products %}
-     
-        <div class="col">
-            <div class="card h-100 product-card">
-                <div class="product-img-container">
-                    {% if product.image %}
-                    <img src="{{ product.image.url }}" class="product-img" alt="{{ product.name }}">
-                    {% else %}
-                    <div class="bg-light text-center p-5">
-                        <i class="fas fa-image fa-3x text-muted"></i>
-                    </div>
-                    {% endif %}
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden transition duration-300 hover:shadow-2xl hover:scale-105 border border-gray-100">
+            <div class="h-48 overflow-hidden">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" class="w-full h-full object-cover transition duration-500 group-hover:scale-110" alt="{{ product.name }}">
+                {% else %}
+                <div class="w-full h-full bg-gray-100 flex items-center justify-center">
+                    <i class="fas fa-image fa-4x text-gray-300"></i>
                 </div>
-                <div class="card-body">
-                    <h5 class="product-title">{{ product.name }}</h5>
-                    <p class="product-desc">{{ product.description|truncatechars:100 }}</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="product-price">৳{{ product.price }}</span>
-                        <div class="rating">
-                            {% for i in "12345" %}
-                            {% if forloop.counter <= product.average_rating %}
-                            <i class="fas fa-star"></i>
-                            {% else %}
-                            <i class="far fa-star"></i>
-                            {% endif %}
-                            {% endfor %}
-                        </div>
+                {% endif %}
+            </div>
+            <div class="p-4">
+                <h5 class="font-semibold text-lg text-gray-900 mb-2 line-clamp-2">{{ product.name }}</h5>
+                <p class="text-gray-600 text-sm mb-4 line-clamp-3">{{ product.description|truncatechars:100 }}</p>
+                <div class="flex justify-between items-center mb-4">
+                    <span class="font-bold text-lg text-gray-900">৳{{ product.price }}</span>
+                    <div class="text-amber-400">
+                        {% for i in "12345" %}
+                        {% if forloop.counter <= product.average_rating %}
+                        <i class="fas fa-star"></i>
+                        {% else %}
+                        <i class="far fa-star"></i>
+                        {% endif %}
+                        {% endfor %}
                     </div>
                 </div>
-                <div class="card-footer bg-white p-4">
-                    <div class="d-grid gap-2">
-                        <a href="{% url 'product_detail' product.slug %}" class="btn btn-sm btn-outline-primary">
-                            <i class="fas fa-eye me-1"></i> View Details
-                        </a>
-                    </div>
-                </div>
+                <a href="{% url 'product_detail' product.slug %}" class="block w-full text-center border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white px-4 py-2 rounded-lg font-medium transition duration-300">
+                    <i class="fas fa-eye mr-1"></i> View Details
+                </a>
             </div>
         </div>
         {% empty %}
-        <div class="col-12">
-            <div class="alert alert-info">No featured products available at the moment.</div>
+        <div class="col-span-full">
+            <div class="bg-blue-50 border border-blue-200 rounded-2xl p-6 text-center">No featured products available at the moment.</div>
         </div>
         {% endfor %}
     </div>
 </div>
 
-
-
-
 <!-- Shop by Category Section -->
-<div class="container my-5 pt-5">
-    <div class="section-header">
-        <h2 class="section-title">Shop by Category</h2>
-        <p class="section-subtitle">Explore our wide range of product categories</p>
+<div class="max-w-7xl mx-auto mb-12 pt-8">
+    <div class="text-center mb-10">
+        <h2 class="font-bold text-2xl md:text-3xl text-gray-900 mb-2">Shop by Category</h2>
+        <p class="text-gray-600 max-w-xl mx-auto">Explore our wide range of product categories</p>
     </div>
     
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {% for category in categories %}
-        <div class="col">
-            <div class="card h-100 category-card">
-                <div class="card-body text-center py-4">
-                    <div class="category-icon">
-                        <i class="fas fa-{% if forloop.counter == 1 %}tshirt{% elif forloop.counter == 2 %}laptop{% elif forloop.counter == 3 %}mobile-alt{% elif forloop.counter == 4 %}home{% elif forloop.counter == 5 %}shoe-prints{% else %}tag{% endif %}"></i>
-                    </div>
-                    <h3 class="category-title">{{ category.name }}</h3>
-                    <p class="card-text">{{ category.description|truncatechars:100 }}</p>
-                    <a href="{% url 'product_list_by_category' category.slug %}" class="btn category-btn">
-                        Browse {{ category.name }}
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden transition duration-300 hover:shadow-2xl hover:-translate-y-1 border border-gray-100">
+            <div class="p-8 text-center">
+                <div class="text-orange-500 mb-4">
+                    <i class="fas fa-{% if forloop.counter == 1 %}tshirt{% elif forloop.counter == 2 %}laptop{% elif forloop.counter == 3 %}mobile-alt{% elif forloop.counter == 4 %}home{% elif forloop.counter == 5 %}shoe-prints{% else %}tag{% endif %} text-5xl"></i>
+                </div>
+                <h3 class="font-bold text-xl mb-2 text-gray-900">{{ category.name }}</h3>
+                <p class="text-gray-600 mb-4 text-sm">{{ category.description|truncatechars:100 }}</p>
+                <a href="{% url 'product_list_by_category' category.slug %}" class="inline-block bg-gray-100 text-orange-500 hover:bg-orange-500 hover:text-white px-6 py-2 rounded-full font-semibold transition duration-300">
+                    Browse {{ category.name }}
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-span-full">
+            <div class="bg-blue-50 border border-blue-200 rounded-2xl p-6 text-center">No categories available at the moment.</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="max-w-7xl mx-auto mb-12">
+    <div class="bg-gray-50 rounded-2xl p-8 md:p-12">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="text-center">
+                <div class="text-orange-500 text-4xl mb-4">
+                    <i class="fas fa-truck"></i>
+                </div>
+                <h3 class="font-semibold text-lg mb-2 text-gray-900">Free Shipping</h3>
+                <p class="text-gray-600 text-sm">On orders over ৳50</p>
+            </div>
+            <div class="text-center">
+                <div class="text-orange-500 text-4xl mb-4">
+                    <i class="fas fa-undo"></i>
+                </div>
+                <h3 class="font-semibold text-lg mb-2 text-gray-900">Easy Returns</h3>
+                <p class="text-gray-600 text-sm">30-day return policy</p>
+            </div>
+            <div class="text-center">
+                <div class="text-orange-500 text-4xl mb-4">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h3 class="font-semibold text-lg mb-2 text-gray-900">Secure Checkout</h3>
+                <p class="text-gray-600 text-sm">100% protected payments</p>
+            </div>
+            <div class="text-center">
+                <div class="text-orange-500 text-4xl mb-4">
+                    <i class="fas fa-headset"></i>
+                </div>
+                <h3 class="font-semibold text-lg mb-2 text-gray-900">24/7 Support</h3>
+                <p class="text-gray-600 text-sm">Dedicated customer service</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Banner Section -->
+<div class="max-w-7xl mx-auto mb-12">
+    <div class="bg-gray-100 rounded-2xl overflow-hidden">
+        <div class="flex flex-col md:flex-row">
+            <div class="hidden md:block md:w-1/2">
+                <img src="https://placehold.co/600x400/f97316/FFFFFF.png?text=Seasonal+Sale+50%+Off" alt="Seasonal sale" class="w-full h-full object-cover">
+            </div>
+            <div class="p-8 md:p-12 flex items-center">
+                <div>
+                    <h3 class="font-bold text-2xl md:text-3xl mb-3 text-gray-900">Seasonal Sale</h3>
+                    <p class="text-gray-600 mb-6">Get up to 50% off on selected items this season. Limited time offer!</p>
+                    <a href="{% url 'product_list' %}" class="inline-block bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-black transition duration-300">
+                        Shop Now
                     </a>
                 </div>
             </div>
         </div>
-        {% empty %}
-        <div class="col-12">
-            <div class="alert alert-info">No categories available at the moment.</div>
-        </div>
-        {% endfor %}
     </div>
 </div>
-
-
-
-
-
-<!-- Features Section -->
-<div class="container my-5">
-    <div class="row features-section">
-        <div class="col-md-3">
-            <div class="feature-item">
-                <div class="feature-icon">
-                    <i class="fas fa-truck"></i>
-                </div>
-                <h3 class="feature-title">Free Shipping</h3>
-                <p class="feature-desc">On orders over ৳50</p>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="feature-item">
-                <div class="feature-icon">
-                    <i class="fas fa-undo"></i>
-                </div>
-                <h3 class="feature-title">Easy Returns</h3>
-                <p class="feature-desc">30-day return policy</p>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="feature-item">
-                <div class="feature-icon">
-                    <i class="fas fa-lock"></i>
-                </div>
-                <h3 class="feature-title">Secure Checkout</h3>
-                <p class="feature-desc">100% protected payments</p>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="feature-item">
-                <div class="feature-icon">
-                    <i class="fas fa-headset"></i>
-                </div>
-                <h3 class="feature-title">24/7 Support</h3>
-                <p class="feature-desc">Dedicated customer service</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
-<!-- Banner Section -->
-<div class="container mt-5 mb-5">
-    <div class="card border-0 bg-light rounded-3 overflow-hidden">
-        <div class="row g-0">
-            <div class="col-md-6 d-none d-md-block">
- <img src="https://placehold.co/600x400/2575fc/FFFFFF.png?text=Seasonal+Sale+50%+Off" alt="Seasonal sale" class="img-fluid" style="height: 100%; object-fit: cover;">            </div>
-            <div class="col-md-6 p-5 d-flex align-items-center">
-                <div>
-                    <h3 class="display-6 fw-bold mb-3">Seasonal Sale</h3>
-                    <p class="lead">Get up to 50% off on selected items this season. Limited time offer!</p>
-                    <a href="{% url 'product_list' %}" class="btn btn-primary">Shop Now</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
-
-{% comment %} 
-
-<!-- Newsletter Section -->
-<div class="container my-5">
-    <div class="card border-0 bg-dark text-white p-5 rounded-3">
-        <div class="row justify-content-center">
-            <div class="col-md-8 text-center">
-                <h3 class="display-6 mb-3">Subscribe to Our Newsletter</h3>
-                <p class="lead mb-4">Get updates on new arrivals, special offers and more.</p>
-                <form class="row g-3 justify-content-center">
-                    <div class="col-md-8">
-                        <input type="email" class="form-control form-control-lg" placeholder="Your email address">
-                    </div>
-                    <div class="col-md-4">
-                        <button type="submit" class="btn btn-light btn-lg w-100">Subscribe</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-{% endcomment %}
-
 
 {% endblock %}

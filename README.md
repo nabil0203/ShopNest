@@ -4,7 +4,7 @@ A full-featured, modern single-vendor e-commerce platform built with Django. Sho
 
 ![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white)
 ![Django](https://img.shields.io/badge/Django-092E20?logo=django&logoColor=white)
-![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?logo=tailwind-css&logoColor=white)
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
@@ -76,12 +76,13 @@ A full-featured, modern single-vendor e-commerce platform built with Django. Sho
 ### Backend
 - **Framework**: Django 6.0
 - **Database**: SQLite (development) / PostgreSQL-ready
-- **Authentication**: Django Allauth, Django Auth
+- **Authentication**: Django Allauth
 - **Payment Gateway**: SSLCommerz
 
 ### Frontend
 - **Template Engine**: Django Templates
-- **Static Files**: CSS, JavaScript (organized structure)
+- **Styling**: Tailwind CSS (utility-first, CDN)
+- **Icons**: Font Awesome
 - **Image Handling**: Pillow (PIL)
 
 
@@ -166,7 +167,7 @@ Visit `http://127.0.0.1:8000/` in your browser.
 
 ## 📁 Project Structure
 
-```
+```bash
 ShopNest/
 ├── manage.py
 ├── db.sqlite3
@@ -176,7 +177,7 @@ ShopNest/
 ├── media/                          # User uploaded files
 │   └── products/
 │       └── YYYY/MM/DD/             # Date-based organization
-├── static/                         # Static files (CSS, JS, Images)
+├── static/                         # Static assets (images, welcome.png)
 ├── templates/                      # HTML templates
 │   ├── base.html
 │   └── shop/
@@ -348,4 +349,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - Django Framework Documentation
 - SSLCommerz for payment gateway
 - Django Allauth for social authentication
-- Bootstrap for responsive design (if used)
+- Tailwind CSS for styling and responsive design

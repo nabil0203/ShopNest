@@ -631,9 +631,9 @@ def payment_cancel(request, order_id):
 # profile view
 @login_required
 def profile_view(request):
-    tab = request.GET.get('tab')                                                     # which tab is active               
-    orders = models.Order.objects.filter(user = request.user)
-    completed_orders = orders.filter(status = 'delivered')
+    tab = request.GET.get('tab')                                                             # which tab is active               
+    orders = models.Order.objects.filter(user = request.user).order_by('-created_at')        # "order_by('-created_at')" --> newest first
+    completed_orders = orders.filter(status = 'delivered')                                   # "filter(status = 'delivered')" --> completed orders
 
     total_spent = sum(order.get_total_cost() for order in orders)
     order_history_active = (tab == 'orders')                                          # true if 'orders' tab is active, else false    

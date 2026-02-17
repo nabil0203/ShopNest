@@ -3,16 +3,16 @@
 {% block title %}Payment Successful | ShopNest{% endblock %}
 
 {% block content %}
-<div class="card text-center py-5 my-5">
-    <div class="card-body">
-        <i class="fas fa-check-circle fa-5x text-success mb-3"></i>
-        <h1 class="mb-3">Payment Successful!</h1>
-        <p class="lead mb-4">Thank you for your purchase. Your order #{{ order.id }} has been confirmed.</p>
-        <p class="mb-4">A confirmation email has been sent to {{ order.email }}.</p>
-        <p class="mb-5">Your transaction ID: <strong>{{ order.transaction_id }}</strong></p>
-        <div class="d-grid gap-2 col-lg-6 mx-auto">
-            <a href="{% url 'profile' %}" class="btn btn-primary">View Your Orders</a>
-            <a href="{% url 'product_list' %}" class="btn btn-outline-secondary">Continue Shopping</a>
+<div class="flex justify-center py-12">
+    <div class="bg-white rounded-2xl shadow-xl p-8 md:p-12 text-center max-w-lg w-full">
+        <i class="fas fa-check-circle text-6xl text-green-500 mb-6"></i>
+        <h1 class="font-bold text-2xl md:text-3xl text-gray-900 mb-4">Payment Successful!</h1>
+        <p class="text-gray-600 mb-4">Thank you for your purchase. Your order #{{ order.id }} has been confirmed.</p>
+        <p class="text-gray-600 mb-4">A confirmation email has been sent to {{ order.email }}.</p>
+        <p class="text-gray-600 mb-8">Your transaction ID: <strong class="text-gray-900">{{ order.transaction_id }}</strong></p>
+        <div class="space-y-3">
+            <a href="{% url 'profile' %}" class="block w-full bg-orange-500 text-white py-3 rounded-lg font-semibold hover:bg-black transition duration-300">View Your Orders</a>
+            <a href="{% url 'product_list' %}" class="block w-full border border-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-50 transition duration-300">Continue Shopping</a>
         </div>
     </div>
 </div>
