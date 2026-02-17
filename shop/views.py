@@ -614,10 +614,15 @@ def payment_success(request, order_id):
             product.stock = 0                                    # if negative value comes by any issue, make stock 0
     
         product.save()
-        
 
-    # Send Confirmation email
-    send_order_confirmation_email(order)
+
+  ## Send Confirmation email
+    try:
+        send_order_confirmation_email(order)
+    except Exception as e:
+        # This will catch the Network error and print it to your Render logs
+        # instead of crashing the checkout page for the user.
+        print(f"Email failed to send: {e}")
 
     return render(request, 'shop/payment_success.html', {'order': order})
 
