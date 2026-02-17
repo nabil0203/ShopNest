@@ -246,46 +246,8 @@ ShopNest/
 - Order status workflow
 - Email notifications
 
-## 🎯 Key Functionalities
-
-### User Journey
-
-1. **Registration/Login**
-   - New users register with username, email, password
-   - Existing users login
-   - Social login via Google OAuth
-
-2. **Browse Products**
-   - View featured products on homepage
-   - Browse by category
-   - Search and filter products
-
-3. **Product Details**
-   - View detailed product information
-   - See related products
-   - Check average ratings and reviews
-
-4. **Add to Cart**
-   - Add products with quantity selection
-   - Stock validation before adding
-   - Update quantities or remove items
-
-5. **Checkout**
-   - Fill shipping information
-   - Review order summary
-   - Proceed to payment
-
-6. **Payment**
-   - Secure SSLCommerz payment gateway
-   - Real-time payment status
-   - Stock deduction upon successful payment
-
-7. **Post-Purchase**
-   - Email confirmation
-   - Rate and review purchased products
-   - Track order status in profile
-
-### Admin Features
+  
+## Admin Features
 
 - **Django Admin Panel** - Full CRUD operations
 - **Category Management** - Create and organize categories
