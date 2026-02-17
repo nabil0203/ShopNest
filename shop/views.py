@@ -49,7 +49,7 @@ def register_view(request):
         
         if form.is_valid():
             user = form.save()
-            login(request, user)
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')                # Explicitly tell Django which backend to use
             messages.success(request, "Registration Successful!")
             return redirect('home')
     else:
