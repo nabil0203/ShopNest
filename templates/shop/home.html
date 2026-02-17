@@ -4,25 +4,6 @@
 
 {% block content %}
 
-{% comment %} <!-- Hero Section -->
-<div class="bg-gradient-to-r from-orange-500 via-white to-black rounded-2xl overflow-hidden shadow-lg mb-12 p-8 md:p-12 lg:p-16">
-    <div class="max-w-7xl mx-auto">
-        <div class="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
-            <div class="hidden lg:block lg:w-2/5 flex-shrink-0">
-                <img src="{% static 'welcome.png' %}" alt="Welcome to ShopNest" class="rounded-2xl w-full object-cover">
-            </div>
-            <div class="flex-1 text-center lg:text-left">
-                <h1 class="font-extrabold text-3xl md:text-4xl lg:text-5xl mb-4 text-gray-900">Welcome to ShopNest</h1>
-                <p class="text-xl md:text-2xl mb-4 text-gray-700">Discover premium products at unbeatable prices!</p>
-                <p class="mb-6 text-gray-600">Shop our extensive catalog of high-quality products curated just for you.</p>
-                <a class="inline-flex items-center gap-2 bg-orange-500 text-white px-8 py-4 rounded-lg font-semibold hover:bg-black transition duration-300 text-lg" href="{% url 'product_list' %}">
-                    <i class="fas fa-shopping-bag"></i> Explore Collection
-                </a>
-            </div>
-        </div>
-    </div>
-</div> {% endcomment %}
-
 
 <!-- Hero Section -->
 <section class="relative mb-10 rounded-3xl overflow-hidden shadow-xl">
@@ -36,11 +17,11 @@
     <div class="relative max-w-7xl mx-auto px-6 py-10 md:py-12">
         <div class="flex flex-col lg:flex-row items-center gap-8">
 
-            <!-- Smaller Image -->
-            <div class="hidden lg:block lg:w-1/3">
+            <!-- Image - Visible on all screen sizes -->
+            <div class="w-full lg:w-1/3 mb-4 lg:mb-0">
                 <img src="{% static 'welcome.png' %}" 
                      alt="Welcome to ShopNest" 
-                     class="rounded-2xl shadow-lg w-full max-h-72 object-contain">
+                     class="rounded-2xl shadow-lg w-full max-h-48 sm:max-h-56 md:max-h-64 lg:max-h-72 object-contain mx-auto">
             </div>
 
             <!-- Content -->
